@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="description"
+      content="MIDI is a novel paradigm for compositional 3D scene generation from a single image, extending pre-trained 3D object generation models to multi-instance diffusion models for simultaneous generation of multiple 3D instances." />
+    <meta
+      name="keywords"
+      content="MIDI, Image to 3D Generation, Diffusion Models, 3D Scene Generation" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      TIMI: Training-Free Image-to-3D Multi-Instance Generation with Spatial Fidelity
+    </title>
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+      rel="stylesheet" />
+
+    <link rel="stylesheet" href="./static/css/bulma.min.css" />
+    <link rel="stylesheet" href="./static/css/bulma-carousel.min.css" />
+    <link rel="stylesheet" href="./static/css/bulma-slider.min.css" />
+    <link rel="stylesheet" href="./static/css/fontawesome.all.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" />
+    <link rel="stylesheet" href="./static/css/index.css" />
+    <!-- <link rel="icon" href="./static/images/favicon.svg" /> -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer src="./static/js/fontawesome.all.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/controls/OrbitControls.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+
+    <!--  Scene Viewer -->
+    <link rel="stylesheet" href="modules/SceneViewer/scene-viewer.css" />
+
+    <!-- Video Viewer -->
+    <link rel="stylesheet" href="modules/VideoViewer/video-viewer.css" />
+  </head>
+  <body>
+    <!-- <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a
+          role="button"
+          class="navbar-burger"
+          aria-label="menu"
+          aria-expanded="false">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+
+      <div class="navbar-menu">
+        <div class="navbar-start" style="flex-grow: 1; justify-content: center">
+          <a class="navbar-item" href="https://github.com/huanngzh">
+            <span class="icon">
+              <i class="fas fa-home"></i>
+            </span>
+          </a>
+
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link"> More Research </a>
+            <div class="navbar-dropdown">
+              <a
+                class="navbar-item"
+                href="https://huanngzh.github.io/EpiDiff/"
+                target="_blank">
+                EpiDiff
+              </a>
+              <a
+                class="navbar-item"
+                href="https://costwen.github.io/Ouroboros3D/"
+                target="_blank">
+                Ouroboros3D
+              </a>
+              <a
+                class="navbar-item"
+                href="https://huanngzh.github.io/MV-Adapter-Page/"
+                target="_blank">
+                MV-Adapter
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav> -->
+
+    <section class="hero">
+      <div class="hero-body">
+        <div class="container is-max-desktop">
+          <div class="columns is-centered">
+            <div class="column has-text-centered">
+              <h1 class="title is-1 publication-title">
+                TIMI: Training-free Image-to-3D Multi-Instance Generation with Spatial Fidelity
+              </h1>
+              <!-- <h2 class="title is-3 publication-title" style="color: #008bf5">
+                CVPR 2025
+              </h2> -->
+              <div class="is-size-5 publication-authors">
+                Xiao Cai<sup>1</sup>,
+                Lianli Gao<sup>1✉</sup>,
+                Pengpeng Zeng<sup>2</sup>,
+                Ji Zhang<sup>3</sup>,
+                Heng Tao Shen<sup>2</sup>,
+                Jingkuan Song<sup>2</sup>,
+                
+              </div>
+
+              <div class="is-size-5 publication-authors">
+                <sup>1</sup>University of Electronic Science and Technology of China <br /> <sup>2</sup>Tongji University
+                &nbsp;&nbsp; <sup>3</sup>Southwest Jiaotong University <br />
+                 <sup>✉</sup>Corresponding
+                Author
+              </div>
+
+              <div class="column has-text-centered">
+                <div class="publication-links">
+                  <!-- PDF Link. -->
+                  <span class="link-block">
+                    <a
+                      href="https://arxiv.org/abs/2412.03558"
+                      target="_blank"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="fas fa-file-pdf"></i>
+                      </span>
+                      <span>Paper</span>
+                    </a>
+                  </span>
+                  <!-- Video Link. -->
+                  <!-- <span class="link-block">
+                    <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
+                       class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                          <i class="fab fa-youtube"></i>
+                      </span>
+                      <span>Video</span>
+                    </a>
+                  </span> -->
+                  <!-- Code Link. -->
+                  <span class="link-block">
+                    <a
+                      href="https://github.com/VAST-AI-Research/MIDI-3D"
+                      target="_blank"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="fab fa-github"></i>
+                      </span>
+                      <span>Code</span>
+                    </a>
+                  </span>
+                  <!-- Model Link. -->
+                  <!-- <span class="link-block">
+                    <a
+                      href="https://huggingface.co/VAST-AI/MIDI-3D"
+                      target="_blank"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="fa fa-database"></i>
+                      </span>
+                      <span>Model</span>
+                    </a>
+                  </span> -->
+                  <!-- Demo Link. -->
+                  <span class="link-block">
+                    <a
+                      href="https://huggingface.co/spaces/VAST-AI/MIDI-3D"
+                      class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon">
+                        <i class="far fa-smile"></i>
+                      </span>
+                      <span>Demo (Coming soon)</span>
+                    </a>
+                  </span>
+                </div>
+              </div>
+
+              <div class="is-size-5 publication-authors">
+                <hr
+                  style="
+                    width: 100%;
+                    height: 0.7px;
+                    background-color: rgba(0, 0, 0, 0.665);
+                    margin-top: 1em;
+                  " />
+                TIMI enables training-free multi-instance generation from a single image, <br>
+                achieving precise global layouts and distinct local instances.
+                <!-- <strong>Multi-Instance Diffusion Models (MIDI)</strong>. -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hero teaser">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-full-width">
+            <img src="./assets/teaser.png" alt="teaser" style="width: 100%" />
+            <!-- <video
+              id="dollyzoom"
+              autoplay
+              controls
+              muted
+              loop
+              playsinline
+              width="100%">
+              <source src="./assets/teaser.mp4" type="video/mp4" />
+            </video> -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container is-max-desktop">
+        <!-- Abstract. -->
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3">Abstract</h2>
+            <div class="content has-text-justified">
+              <p>
+                Precise spatial fidelity in Image-to-3D multi-instance generation is critical for downstream real-world applications. 
+                Recent work attempts to address this by fine-tuning pre-trained Image-to-3D (I23D) models on multi-instance datasets, 
+                which incurs substantial training overhead and  struggles to guarantee spatial fidelity. In fact, we observe that pre-trained 
+                I23D models already possess meaningful spatial priors, which remain underutilized as evidenced by instance entanglement issues. 
+                Motivated by this, we propose TIMI, a novel Training-free framework for Image-to-3D Multi-Instance generation that achieves 
+                high spatial fidelity. Specifically, we first introduce an Instance-aware Separation Guidance (ISG) module, which facilitates 
+                instance disentanglement during the early denoising stage. Next, to stabilize the guidance introduced by ISG, we devise a 
+                Spatial-stabilized Geometry-adaptive Update (SGU) module that promotes the preservation of the geometric characteristics of 
+                instances while maintaining their relative relationships. Extensive experiments demonstrate that our method yields better 
+                performance in terms of both global layout and distinct local instances compared to existing multi-instance methods, 
+                without requiring additional training and with faster inference speed.
+              </p>
+            </div>
+          </div>
+        </div>
+        <!--/ Abstract. -->
+      </div>
+    </section>
+
+    <!-- <section class="section">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-full-width">
+            <div class="has-text-centered">
+              <h2 class="title is-3">How it works</h2>
+            </div>
+            <br />
+            <div class="has-text-justified">
+              Given an input image of a scene, we segment it into multiple parts
+              and use a multi-instance diffusion model conditioned on those
+              images to generate compositional 3D instances of the scene. These
+              3D instances can be directly composed into a scene. The total
+              processing time runs in as little as 40 seconds.
+            </div>
+            <video autoplay muted loop playsinline height="80%">
+              <source src="./assets/how_it_works.mp4" type="video/mp4" />
+            </video>
+          </div>
+        </div>
+      </div>
+    </section> -->
+
+    <!-- Scripts Start -->
+    <script type="module">
+      import { ViewerModule } from "./modules/SceneViewer/scene-viewer.js";
+      
+      const viewer = new ViewerModule(
+        ".scene-viewer",
+        [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+        ],
+        "./assets/models",
+        "./assets/models"
+      );
+      viewer.init();
+    </script>
+    <!-- Scripts End -->
+
+    <section class="section" style="padding-top: 0">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-full-width">
+            <div class="has-text-centered">
+              <h2 class="title is-3">Interactive Results</h2>
+            </div>
+            <br />
+            <!-- <div>
+              Texture of the 3D scenes is generated using
+              <a href="https://github.com/huanngzh/MV-Adapter" target="_blank"
+                >MV-Adapter</a
+              >.
+            </div> -->
+            <div class="scene-viewer">
+              <!-- Scene Viewer -->
+              <div id="loading-overlay">
+                <div class="loading-spinner"></div>
+              </div>
+              <div id="viewer-container"></div>
+              <div id="button-block"></div>
+              <div class="swiper">
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-wrapper" id="image-slider"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script type="module">
+      import { VideoViewerModule } from "./modules/VideoViewer/video-viewer.js";
+
+      const videoViewer = new VideoViewerModule(
+        ".video-viewer",
+        [
+          "1",
+          "2",
+          "5",
+          
+          "7",
+          "4",
+          "3",
+          
+          "6",
+          "8",
+        ],
+        "assets/vids",
+        "assets/vids"
+      );
+      videoViewer.init();
+    </script>
+
+    <section class="section">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-full-width">
+            <div class="has-text-centered">
+              <h2 class="title is-3">Comparisons to Other Methods</h2>
+            </div>
+            <br />
+            <div class="video-viewer">
+              <div id="video-container"></div>
+              <div class="swiper">
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-wrapper" id="image-slider"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container is-max-desktop">
+        <div class="has-text-centered">
+          <h2 class="title is-3">Method Overview</h2>
+        </div>
+        <br />
+        <div class="columns is-centered">
+          <div class="column is-full-width">
+            <br />
+            <img src="./assets/pipeline.png" class="" alt="" />
+            Given a single image and instance masks, TIMI guides a frozen pre-trained Image-to-3D diffusion model to generate multi-instance 3D outputs without  additional training. 
+    <b>(a) Instance-aware Separation Guidance</b> applies instance-level constraints to early cross-attention layers to promote instance separation. 
+    <b>(b) Spatial-stabilized Geometry-adaptive Update</b> stabilizes inference-time guidance via geometry-adaptive gradient modulation to preserve overall spatial structure.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="BibTeX">
+      <div class="container is-max-desktop content">
+        <div class="has-text-centered">
+          <h2 class="title">BibTeX</h2>
+        </div>
+        <div
+          class="columns is-centered has-text-centered"
+          style="padding-bottom: 1.5rem">
+          <div class="column is-four-fifths">
+            <div class="content has-text-justified">
+              <pre><code>@inproceedings{huang2025midi,
+  title={Midi: Multi-instance diffusion for single image to 3d scene generation},
+  author={Huang, Zehuan and Guo, Yuan-Chen and An, Xingqiao and Yang, Yunhan and Li, Yangguang and Zou, Zi-Xin and Liang, Ding and Liu, Xihui and Cao, Yan-Pei and Sheng, Lu},
+  booktitle={Proceedings of the Computer Vision and Pattern Recognition Conference},
+  pages={23646--23657},
+  year={2025}
+}</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="content has-text-centered">
+          <a class="icon-link" href="https://arxiv.org/abs/2412.03558">
+            <i class="fas fa-file-pdf"></i>
+          </a>
+          <a
+            class="icon-link"
+            href="https://github.com/huanngzh"
+            class="external-link"
+            disabled>
+            <i class="fab fa-github"></i>
+          </a>
+        </div>
+        <div class="columns is-centered">
+          <div class="column is-8">
+            <div class="content">
+              <p style="text-align: center">
+                Source code of this page can be found at
+                <a href="https://github.com/huanngzh/MIDI-Page" target="_blank"
+                  >TIMI-Page</a
+                >. The website template is borrowed from
+                <a href="https://nerfies.github.io/" target="_blank">Nerfies</a
+                >.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
